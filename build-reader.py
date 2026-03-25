@@ -12,48 +12,88 @@ import html
 CONTENT_DIR = "content"
 OUTPUT_FILE = os.path.join("reader", "index.html")
 
-# Parallax scene configs: gradient backgrounds for each piece transition
-# These are placeholder scenes — swap with real imagery later
+# Parallax scene configs: gradient fallbacks + image layers
+# Images go in reader/images/<name>.png — gradient shows until images are added
 SCENE_CONFIGS = {
     "01-brooklyn-summer": {
         "gradient": "linear-gradient(180deg, #1a2a3a 0%, #0d1a2a 40%, #1a3040 100%)",
-        "label": "Brooklyn summer",
+        "layers": [
+            {"image": "brooklyn-bg.png", "speed": 0.3},
+            {"image": "brooklyn-mid.png", "speed": 0.6},
+            {"image": "brooklyn-fg.png", "speed": 0.8},
+        ],
     },
     "02-pancakes": {
         "gradient": "linear-gradient(180deg, #3a2a1a 0%, #2a1f12 40%, #4a3520 100%)",
-        "label": "Pancakes",
+        "layers": [
+            {"image": "pancakes-bg.png", "speed": 0.3},
+            {"image": "pancakes-mid.png", "speed": 0.6},
+            {"image": "pancakes-fg.png", "speed": 0.8},
+        ],
     },
     "04-reflection": {
         "gradient": "linear-gradient(180deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)",
-        "label": "Reflection",
+        "layers": [
+            {"image": "reflection-bg.png", "speed": 0.3},
+            {"image": "reflection-mid.png", "speed": 0.6},
+            {"image": "reflection-fg.png", "speed": 0.8},
+        ],
     },
     "05-misfits": {
         "gradient": "linear-gradient(180deg, #3a1a1a 0%, #2e1212 40%, #4a2020 100%)",
-        "label": "Misfits",
+        "layers": [
+            {"image": "misfits-bg.png", "speed": 0.3},
+            {"image": "misfits-mid.png", "speed": 0.6},
+            {"image": "misfits-fg.png", "speed": 0.8},
+        ],
     },
     "07-constance": {
         "gradient": "linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 40%, #2a2a2a 100%)",
-        "label": "The Virtues of Constance",
+        "layers": [
+            {"image": "constance-bg.png", "speed": 0.3},
+            {"image": "constance-mid.png", "speed": 0.6},
+            {"image": "constance-fg.png", "speed": 0.8},
+        ],
     },
     "08-uncle": {
         "gradient": "linear-gradient(180deg, #1a2a3a 0%, #0d1520 40%, #1a2530 100%)",
-        "label": "Uncle",
+        "layers": [
+            {"image": "uncle-bg.png", "speed": 0.3},
+            {"image": "uncle-mid.png", "speed": 0.6},
+            {"image": "uncle-fg.png", "speed": 0.8},
+        ],
     },
     "09-doorjam": {
         "gradient": "linear-gradient(180deg, #3a2010 0%, #4a2a0a 40%, #2a1505 100%)",
-        "label": "Doorjam",
+        "layers": [
+            {"image": "doorjam-bg.png", "speed": 0.3},
+            {"image": "doorjam-mid.png", "speed": 0.6},
+            {"image": "doorjam-fg.png", "speed": 0.8},
+        ],
     },
     "10-drown": {
         "gradient": "linear-gradient(180deg, #0a1520 0%, #0d1a2e 40%, #1a2a3a 100%)",
-        "label": "Drown",
+        "layers": [
+            {"image": "drown-bg.png", "speed": 0.3},
+            {"image": "drown-mid.png", "speed": 0.6},
+            {"image": "drown-fg.png", "speed": 0.8},
+        ],
     },
     "12-beloved-creation": {
         "gradient": "linear-gradient(180deg, #1a1a2e 0%, #2a1a3a 40%, #1a1520 100%)",
-        "label": "His Beloved Creation",
+        "layers": [
+            {"image": "beloved-bg.png", "speed": 0.3},
+            {"image": "beloved-mid.png", "speed": 0.6},
+            {"image": "beloved-fg.png", "speed": 0.8},
+        ],
     },
     "13-transcendent-love": {
         "gradient": "linear-gradient(180deg, #1a2e1a 0%, #0d200d 40%, #1a3a1a 100%)",
-        "label": "Transcendent Love",
+        "layers": [
+            {"image": "transcendent-bg.png", "speed": 0.3},
+            {"image": "transcendent-mid.png", "speed": 0.6},
+            {"image": "transcendent-fg.png", "speed": 0.8},
+        ],
     },
 }
 
@@ -159,16 +199,34 @@ def markdown_to_html(text, piece_type):
 
 
 def build_parallax_scene(slug):
-    """Generate a parallax scene divider."""
+    """Generate a parallax scene divider with image layers + gradient fallback."""
     config = SCENE_CONFIGS.get(slug)
     if not config:
         return ""
+
+    layers_html = ""
+    for i, layer in enumerate(config.get("layers", [])):
+        img = layer["image"]
+        speed = layer["speed"]
+        # Check if image file exists
+        img_path = os.path.join("reader", "images", img)
+        if os.path.exists(img_path):
+            layers_html += (
+                f'      <div class="parallax-layer" '
+                f'data-speed="{speed}" '
+                f'style="background-image: url(\'images/{img}\'); '
+                f'background-size: cover; background-position: center;"></div>\n'
+            )
+        else:
+            # Gradient-only placeholder layer
+            layers_html += (
+                f'      <div class="parallax-layer parallax-layer-{i + 1}" '
+                f'data-speed="{speed}"></div>\n'
+            )
+
     return f'''
     <div class="parallax-scene" style="background: {config["gradient"]};">
-      <div class="parallax-layer parallax-layer-1"></div>
-      <div class="parallax-layer parallax-layer-2"></div>
-      <div class="parallax-layer parallax-layer-3"></div>
-    </div>
+{layers_html}    </div>
 '''
 
 
@@ -549,23 +607,39 @@ def generate_html(pieces):
 
   .parallax-layer {{
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0.15;
+    top: -10%;
+    left: -5%;
+    right: -5%;
+    bottom: -10%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    will-change: transform;
   }}
 
+  /* Gradient-only placeholder layers (shown when no images exist) */
   .parallax-layer-1 {{
+    opacity: 0.15;
     background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 70%);
   }}
 
   .parallax-layer-2 {{
+    opacity: 0.15;
     background: radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.08) 0%, transparent 60%);
   }}
 
   .parallax-layer-3 {{
+    opacity: 0.15;
     background: radial-gradient(ellipse at 50% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+  }}
+
+  /* Image layers get full opacity */
+  .parallax-layer[style*="background-image"] {{
+    opacity: 0.85;
+  }}
+
+  html.dark .parallax-layer[style*="background-image"] {{
+    opacity: 0.7;
   }}
 
   /* Scroll animations */
@@ -789,18 +863,20 @@ def generate_html(pieces):
     }});
   }}
 
-  // Parallax scroll effect
+  // Parallax scroll effect — uses data-speed attribute per layer
   const scenes = document.querySelectorAll('.parallax-scene');
+  const isMobile = window.innerWidth < 768;
   function updateParallax() {{
+    if (isMobile) return; // Static on mobile
     scenes.forEach(function(scene) {{
       const rect = scene.getBoundingClientRect();
-      const speed = 0.3;
       if (rect.top < window.innerHeight && rect.bottom > 0) {{
-        const offset = (rect.top - window.innerHeight) * speed;
+        const scrollProgress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
         const layers = scene.querySelectorAll('.parallax-layer');
-        layers.forEach(function(layer, i) {{
-          const layerSpeed = (i + 1) * 0.15;
-          layer.style.transform = 'translateY(' + (offset * layerSpeed) + 'px)';
+        layers.forEach(function(layer) {{
+          const speed = parseFloat(layer.getAttribute('data-speed') || '0.3');
+          const offset = (scrollProgress - 0.5) * rect.height * speed * 0.5;
+          layer.style.transform = 'translateY(' + offset + 'px) scale(1.1)';
         }});
       }}
     }});
