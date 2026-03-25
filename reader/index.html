@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Short Works &mdash; Shawn Jordan</title>
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --bg-alt: #ebe5d8;
+    --text: #2c2416;
+    --text-muted: #6b5d4d;
+    --accent: #8b7355;
+    --border: #c9bda8;
+    --pull-bg: #efe9de;
+    --progress-bg: #d4c9b8;
+    --progress-fill: #8b7355;
+  }
+
+  html.dark {
+    --bg: #1a1612;
+    --bg-alt: #231e18;
+    --text: #d4c9b8;
+    --text-muted: #8b7d6b;
+    --accent: #c4a97d;
+    --border: #3d3428;
+    --pull-bg: #231e18;
+    --progress-bg: #2a2319;
+    --progress-fill: #c4a97d;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 18px;
+  }
+
+  body {
+    font-family: Georgia, 'Times New Roman', 'Palatino Linotype', serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.9;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    min-height: 100vh;
+  }
+
+  #progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--progress-fill);
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  header {
+    position: fixed;
+    top: 3px;
+    right: 0;
+    left: 0;
+    z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1.5rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.4s ease;
+  }
+
+  header.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  header nav {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  header nav a {
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  header nav a:hover, header nav a.active-nav { color: var(--accent); }
+
+  .dark-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: Georgia, serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .dark-toggle:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  main {
+    max-width: 70ch;
+    margin: 0 auto;
+    padding: 6rem 1.5rem 4rem;
+  }
+
+  .title-block {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 3rem 0;
+  }
+
+  .collection-title {
+    font-size: 2rem;
+    font-variant: small-caps;
+    letter-spacing: 0.15em;
+    font-weight: normal;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .collection-author {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 1rem;
+  }
+
+  .collection-ornament {
+    display: block;
+    margin: 1.5rem auto 0;
+    color: var(--accent);
+    font-size: 1.2rem;
+    letter-spacing: 0.6em;
+    opacity: 0.5;
+  }
+
+  /* Piece dividers */
+  .piece-divider {
+    text-align: center;
+    margin: 6rem 0 2rem;
+    padding: 4rem 0 3rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .piece-heading {
+    font-size: 1.4rem;
+    font-variant: small-caps;
+    letter-spacing: 0.15em;
+    font-weight: normal;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .piece-ornament {
+    display: block;
+    margin: 1rem auto 0;
+    color: var(--accent);
+    font-size: 1rem;
+    letter-spacing: 0.6em;
+    opacity: 0.5;
+  }
+
+  /* Prose styling */
+  .prose p {
+    margin-bottom: 1.5rem;
+    text-align: justify;
+    text-indent: 2rem;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+
+  .prose p:first-of-type,
+  .section-break + p {
+    text-indent: 0;
+  }
+
+  .drop-cap::first-letter {
+    float: left;
+    font-size: 4.2rem;
+    line-height: 0.75;
+    padding: 0.1rem 0.5rem 0 0;
+    color: var(--accent);
+    font-weight: normal;
+    font-family: Georgia, 'Palatino Linotype', serif;
+  }
+
+  /* Poetry styling */
+  .poetry .poem-stanza {
+    margin-bottom: 1.8rem;
+    text-align: left;
+    line-height: 2;
+  }
+
+  /* Hybrid styling */
+  .hybrid p {
+    margin-bottom: 1.5rem;
+    text-align: justify;
+    text-indent: 2rem;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+
+  .hybrid p:first-of-type {
+    text-indent: 0;
+  }
+
+  .hybrid-verse {
+    margin: 2.5rem 0;
+    padding-left: 2rem;
+  }
+
+  .hybrid-verse .poem-stanza {
+    text-align: left;
+    text-indent: 0;
+    line-height: 2.2;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  /* Micro-poem styling */
+  .micro-poem {
+    text-align: center;
+    padding: 3rem 0;
+  }
+
+  .micro-poem-text {
+    font-size: 1.15em;
+    line-height: 2.2;
+    font-style: italic;
+    color: var(--text);
+  }
+
+  .micro-divider {
+    text-align: center;
+    margin: 1rem 0;
+    color: var(--accent);
+    font-size: 1rem;
+    opacity: 0.4;
+  }
+
+  /* Section break */
+  .section-break {
+    text-align: center;
+    margin: 3rem 0;
+    color: var(--accent);
+    font-size: 0.9rem;
+    letter-spacing: 0.8em;
+    opacity: 0.4;
+  }
+
+  /* Parallax scenes */
+  .parallax-scene {
+    position: relative;
+    height: 70vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 calc(-50vw + 50%);
+    width: 100vw;
+  }
+
+  .parallax-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.15;
+  }
+
+  .parallax-layer-1 {
+    background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 70%);
+  }
+
+  .parallax-layer-2 {
+    background: radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.08) 0%, transparent 60%);
+  }
+
+  .parallax-layer-3 {
+    background: radial-gradient(ellipse at 50% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+  }
+
+  /* Scroll animations */
+  .piece-section {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .piece-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Dot navigation */
+  #section-nav {
+    position: fixed;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 998;
+  }
+
+  #section-nav a {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s ease, transform 0.3s ease;
+    position: relative;
+    text-decoration: none;
+  }
+
+  #section-nav a.active {
+    background: var(--accent);
+    transform: scale(1.3);
+  }
+
+  #section-nav a:hover {
+    background: var(--accent);
+  }
+
+  #section-nav a .dot-label {
+    display: none;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.6rem;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-family: Georgia, serif;
+  }
+
+  #section-nav a:hover .dot-label {
+    display: block;
+  }
+
+  /* Footer */
+  footer {
+    max-width: 70ch;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  footer p {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    line-height: 2;
+  }
+
+  footer .ornament {
+    color: var(--accent);
+    opacity: 0.4;
+    font-size: 0.9rem;
+    letter-spacing: 0.6em;
+    margin-bottom: 1rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    html { font-size: 16px; }
+    main { padding: 5rem 1.2rem 3rem; }
+    .title-block { margin-bottom: 3rem; padding: 2rem 0; }
+    .piece-heading { font-size: 1.2rem; }
+    .parallax-scene { height: 40vh; }
+    #section-nav { display: none; }
+    .piece-divider { margin: 4rem 0 1.5rem; padding: 3rem 0 2rem; }
+    header nav { gap: 0.4rem; }
+    header nav a { font-size: 0.55rem; }
+    .drop-cap::first-letter { font-size: 3.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header id="header">
+  <nav>
+    <a href="#title">Top</a>
+    <a href="#piece-1">Brooklyn summer</a>
+    <a href="#piece-2">Pancakes</a>
+    <a href="#piece-4">Reflection</a>
+    <a href="#piece-5">Misfits</a>
+    <a href="#piece-7">The Virtues of Const...</a>
+    <a href="#piece-8">Uncle</a>
+    <a href="#piece-9">Doorjam</a>
+    <a href="#piece-10">Drown</a>
+    <a href="#piece-12">His Beloved Creation</a>
+    <a href="#piece-13">Transcendent Love</a>
+    <a href="#piece-14">Zoe</a>
+  </nav>
+  <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">Lamplight</button>
+</header>
+
+<nav id="section-nav" aria-label="Piece navigation">
+  <a href="#piece-1" title="Brooklyn summer"><span class="dot-label">Brooklyn summer</span></a>
+  <a href="#piece-2" title="Pancakes"><span class="dot-label">Pancakes</span></a>
+  <a href="#piece-4" title="Reflection"><span class="dot-label">Reflection</span></a>
+  <a href="#piece-5" title="Misfits"><span class="dot-label">Misfits</span></a>
+  <a href="#piece-7" title="The Virtues of Constance"><span class="dot-label">The Virtues of Constance</span></a>
+  <a href="#piece-8" title="Uncle"><span class="dot-label">Uncle</span></a>
+  <a href="#piece-9" title="Doorjam"><span class="dot-label">Doorjam</span></a>
+  <a href="#piece-10" title="Drown"><span class="dot-label">Drown</span></a>
+  <a href="#piece-12" title="His Beloved Creation"><span class="dot-label">His Beloved Creation</span></a>
+  <a href="#piece-13" title="Transcendent Love"><span class="dot-label">Transcendent Love</span></a>
+  <a href="#piece-14" title="Zoe"><span class="dot-label">Zoe</span></a>
+</nav>
+
+<main>
+  <div class="title-block" id="title">
+    <h1 class="collection-title">Short Works</h1>
+    <p class="collection-author">Shawn Jordan</p>
+    <span class="collection-ornament">&middot; &middot; &middot;</span>
+  </div>
+
+  
+    <section class="piece-section" id="piece-1">
+      
+    <div class="piece-divider" style="border-top:none;margin-top:0;padding-top:0;">
+      <h2 class="piece-heading">Brooklyn summer</h2>
+      <span class="piece-ornament">&middot; &middot; &middot;</span>
+    </div>
+
+      <div class="prose">
+        <p class="drop-cap">A New York summer usually feels like you&#x27;re sticking your head into an oven. The heat seeps into the concrete and steel and sits so heavy on the air you think at times it might smother you. But at the end of those summer days, when the sun has swung low and the asphalt is left to smolder, my husband and I saunter down the old cobblestone streets of Brooklyn and feel the cool evening settle upon the shipyards. The sun nestles itself in a sea of neon that silhouettes the city skyline, its light dancing on the shattered glass that litters empty warehouses. Electric colored graffiti streaks in spray painted whorls across the rusted fences that run the sidewalks&#x27; edge. Our shadows stretch and dance among buildings and empty lots filled with scrap parts. With fingers intertwined we walk to the end of a pier, to a place where the wild winds whip the waves into frenzy on the rocks and we can see the whole of New York City, brimming with light and splendor and promise. On certain days the heat lingers into the night like a guest overstaying his welcome, and often I find myself dreaming that we climb the railing and lower ourselves to the rocks below. We toss our shoes and strip our clothes, our skin prickling with goose bumps as we step with abandon into the dusky waters and sink down, deep beyond the reach of the summer heat.</p>
+      </div>
+    </section>
+
+
+    <div class="parallax-scene" style="background: linear-gradient(180deg, #1a2a3a 0%, #0d1a2a 40%, #1a3040 100%);">
+      <div class="parallax-layer parallax-layer-1"></div>
+      <div class="parallax-layer parallax-layer-2"></div>
+      <div class="parallax-layer parallax-layer-3"></div>
+    </div>
+
+
+    <section class="piece-section" id="piece-2">
+      
+    <div class="piece-divider" >
+      <h2 class="piece-heading">Pancakes</h2>
+      <span class="piece-ornament">&middot; &middot; &middot;</span>
+    </div>
+
+      <div class="prose">
+        <p class="drop-cap">School was right around the corner so we had heaps of time. Every morning I floated down the stairs on the perfumes of fresh pancakes. Beautiful golden crispy-edged rounds, littered in a puddle of drizzled syrup. We&#x27;d lay the butter on thick, generous pads of fat that slid down the tan hills. I would flick through the channels while you would sing your silly songs, always looking for a laugh while I looked for cartoons. We were one of a kind, two peas in a pod. And by the time we had to head out, we were full to brimming, because the flapjacks were always piled high, a generous tower that never quite met the ceiling but came near close some days. And now here I am, trying to find the right recipe, that one that flipped instead of flopped. Asking - is it there? Somewhere in the stack?</p>
+<div class="section-break">&middot; &middot; &middot;</div>
+<p>We&#x27;ve got this special pan - the kind we only take out when we&#x27;re making pancakes. You see, this pan is powered by magic. The sort of simple magic that makes a kid dare to flip cartwheels or that helps smoke escape out an open window. This pan, it catches the sun that streams in, like a glistening torrent of slick butter drizzling right off the breeze and basking in pools and puddles around our bubbling dough. Every pancake cooked in this pan is the one no one can resist. The one that&#x27;s rare, that strikes at simple tones in simple memories. This is the pan where the cake never burns and the flip never misfires, where the oils never spit as they simmer around the cooking sweets but rather whisper words to the chef: "what if? what if?" We&#x27;ll lean in close, at attention on tipped toes, listening for the right pop of bubbles in the dough before we dare to flip.</p>
+      </div>
+    </section>
+
+
+    <div class="parallax-scene" style="background: linear-gradient(180deg, #3a2a1a 0%, #2a1f12 40%, #4a3520 100%);">
+      <div class="parallax-layer parallax-layer-1"></div>
+      <div class="parallax-layer parallax-layer-2"></div>
+      <div class="parallax-layer parallax-layer-3"></div>
+    </div>
+
+
+    <section class="piece-section" id="piece-3">
+      
+      <div class="micro-poem">
+        <p class="micro-poem-text">I&#x27;m afraid that I&#x27;ll one day<br>
+Fear so fully<br>
+I cannot see beyond my fear.</p>
+      </div>
+    </section>
+
+<div class="micro-divider">&middot;</div>
+
+    <section class="piece-section" id="piece-4">
+      
+    <div class="piece-divider" >
+      <h2 class="piece-heading">Reflection</h2>
+      <span class="piece-ornament">&middot; &middot; &middot;</span>
+    </div>
+
+      <div class="prose">
+        <p class="drop-cap">The water lay perfectly still, silently reflecting the blinking eyes of faraway stars that stirred sleepily in the shroud of dying summer light. The sun dangled carelessly on the cusp of the earth&#x27;s face, its rose hues bleeding into swaths of indigo dark as a fresh bruise. I approached the water&#x27;s edge, each step pulsing in that celestial mirror and making the stars rock softly in place before resolving back into their watchful posts. I leaned over the water and peered down into the void, straining to see the dim features of my likeness in the fading light. The profile was obscured almost entirely in darkness, but my eyes traced the shape of an outline floating tranquilly in the bed of night sky below the water&#x27;s surface. My eyes grappled for a familiar feature on that shadowy face, only to find the distant whites of a stranger&#x27;s eyes looking back. I moved closer, certain that no body was there but me, and yet as my hand rose to touch my face, I saw only that sinister specter staring back, steadfast in its stillness. I swatted at the water, shattering the stranger in the pool into countless pieces, and settled back on the shore to stare instead into the untouchable sky.</p>
+      </div>
+    </section>
+
+
+    <div class="parallax-scene" style="background: linear-gradient(180deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);">
+      <div class="parallax-layer parallax-layer-1"></div>
+      <div class="parallax-layer parallax-layer-2"></div>
+      <div class="parallax-layer parallax-layer-3"></div>
+    </div>
+
+
+    <section class="piece-section" id="piece-5">
+      
+    <div class="piece-divider" >
+      <h2 class="piece-heading">Misfits</h2>
+      <span class="piece-ornament">&middot; &middot; &middot;</span>
+    </div>
+
+      <div class="prose">
+        <p class="drop-cap">The meal was cold as hell - unsurprising, given that we were the last table to be served in the grand reception hall. I picked half-heartedly at the limp beans and boned chicken drowned in a puddle of congealed gravy. Looking around the sprawling room at the odd assortment of politicians and port workers, I wondered if it had been a mistake flying in to attend my brother&#x27;s wedding. He and his new bride were making the rounds through the red sea of faces, shaking hands with sleazy sunburnt statesmen and their accessory wives. Perhaps sensing my distaste, my husband caught my eye and offered a resigned smile from across the table.</p>
+<p>It was through some odd choice that he and I had been separated from the rest of my family, who were seated just a table over. In our place, a stranger had been inserted, a lone wolf seated next to grandma, making trite conversation and rolling his eyes whenever she looked away. It was clear the prick abhorred his seating relegation as much as me, and I considered offering a trade before deciding it best not to disturb the delicately choreographed arrangement. Still I couldn&#x27;t help but think that an extra chair would have easily been accommodated at the large, round table.</p>
+<p>Instead, we had been seated next to the honorable judge something-or-other and his chatty wife. The two had started with the typical trivialities, though it didn&#x27;t take long for the judge to disengage, leaving his wife to divulge stories of their kids. She admitted to downing an espresso martini before dinner and confided that she was certain Adderall had made her son skinny. The judge meanwhile had turned his back to us so he could converse with a flush-faced drunk on his other side. The two guffawed at their own unfunny jokes and spoke loudly about the looks of the drunk&#x27;s date. "I can&#x27;t wait to take her home!" the blowhard boasted, as if he were about to drive a new car off the lot. I watched as she pushed food around on her plate, never once raising her eyes to meet the ravenous gaze of the men.</p>
+<p>The taste of acid rose in the back of my throat, and I thought I might run off to vomit up what little I had eaten when I felt the sharp slap of a hand on my back. It was my brother. He and his new wife looked over the table, their faces aglow from the attention of their guests. "I hope y&#x27;all are enjoying yourselves," he yelled over the din of the hall. "This was our table of misfits, so it&#x27;s good to see you getting along." He laughed for himself and moved on to the next table, his bride trailing behind.</p>
+<p>I suddenly felt like a square peg in a city full of round holes and roundabout people. Sure, I myself had once grown up here - had called it my home even - and yet I wondered whether the charm offered by the Holy City had been contingent on me smoothing my odd edges and dulling myself enough to fit in. Around the room&#x27;s periphery, portraits of apathetic old men hung high on the walls, a white-haired army clad in stiff suits and disdainful scowls that left me feeling awfully cornered.</p>
+<p>I was seeing red, thick as blood, when the room fell suddenly quiet. The newlyweds were preparing to cut into the wedding cake, a shining steel knife clutched in their joined fists. I felt my husband&#x27;s hand come to rest on mine. The bewildered look on his face made me realize then that I was growling and loudly at that, like a feral dog. The judge had seen fit to return his attention to me, his eyes begging for an explanation. I pushed away the macabre meal on my plate. "Guess I&#x27;m hungry for cake," I muttered.</p>
+      </div>
+    </section>
+
+
+    <div class="parallax-scene" style="background: linear-gradient(180deg, #3a1a1a 0%, #2e1212 40%, #4a2020 100%);">
+      <div class="parallax-layer parallax-layer-1"></div>
+      <div class="parallax-layer parallax-layer-2"></div>
+      <div class="parallax-layer parallax-layer-3"></div>
+    </div>
+
+
+    <section class="piece-section" id="piece-6">
+      
+      <div class="micro-poem">
+        <p class="micro-poem-text">His kisses<br>
+Are the first drops of summer storms<br>
+Smothering the heat.</p>
+      </div>
+    </section>
+
+<div class="micro-divider">&middot;</div>
+
+    <section class="piece-section" id="piece-7">
+      
+    <div class="piece-divider" >
+      <h2 class="piece-heading">The Virtues of Constance</h2>
+      <span class="piece-ornament">&middot; &middot; &middot;</span>
+    </div>
+
+      <div class="prose">
+        <p class="drop-cap">The train blustered off onto the distant shadows of tracks, leaving Constance alone on the elevated platform. The air was heavy with the sticky humid of the hot August night, and already drips of sweat were matting her blouse to her back.</p>
+<p>"Of course, he&#x27;s forgotten me," she spat, looking around the empty station and sizing up what it would take to camp for the night, certain as she was that her son would not arrive until morning. She was just bending down to open her suitcase and start fashioning a makeshift bed when she was suddenly plunged under a cold and oppressive spotlight.</p>
+<p>Her pupils tightened like nooses holding fast to a felon&#x27;s neck. The bleat of the car horn shook her - only for a moment - and she marched herself to the car. The trunk popped open as she drew near.</p>
+<p>"Not even helping his tired mother," she cursed into the dimly lit trunk. She threw in her suitcase and slammed it closed. Then with a terse huff, she threw her purse and then herself into the sunken back seat of the sedan.</p>
+<p>"Mom, come sit up here with me." She could feel his gaze searching her face in the rearview mirror. Her knees dug into the back of her son&#x27;s seat, a helpful connection to have should he doze at the wheel. A quick bump in the back could save their lives.</p>
+<p>"I&#x27;d rather not," she retorted. Her eyes locked on the passenger dash, and she felt his weight shift in the seat. She took the opportunity to bite at him. "Did you ever go see a mechanic? I told you about that airbag recall months ago."</p>
+<p>His squirming stopped. "How could I—"</p>
+<p>"Exactly. How could you? You drive your family from appointment to appointment and don&#x27;t think for once about the risks you&#x27;re taking. Honestly, I thought I raised you better than that, Peter."</p>
+<p>He let out a tired sigh. "Suit yourself." They drove in unrelenting silence for some time.</p>
+<p>The car careened madly down the highway, plummeting with abandon through the dark heart of night. Its headlights, all the while, cast the endless abyss into furious contrast. Inside the circled light leading the car, the asphalt, the guardrails, the oncoming cars - all roared through in frantic blurs. Outside the circle, nothing but darkness, calm and dead, and yet she could sense the unseen guardrails on either side. They loomed closer in the darkness then lurked away, remaining hidden but pressing in tighter and tighter. Her hands gripped at whatever they could find — the door handle, then the seatbelt, then each other, falling into a sort of writhing dance in her lap.</p>
+<p>"Peter, are you falling asleep? You&#x27;re swerving like a drunk." She pushed her knees into the seat to be sure he&#x27;d heard.</p>
+<p>"I&#x27;m fine, mom. Are you feeling carsick?"</p>
+<p>"Nonsense! I&#x27;ve never once been carsick." Indeed, her stomach was a proven vice. As a girl she had once swallowed ten marbles on a dare, and none had ever come out. She felt his eyes on her again, but she couldn&#x27;t look away from the fury of highway in the headlights ahead. She swore the car was swaying like they were navigating a stormy sea wrought with rolling waves set on smothering their meager ship. Her stomach turned over with seasickness, and she swallowed as the taste of marbles filled her mouth.</p>
+<p>"Why don&#x27;t you turn on the radio?" she barked. She hoped the music might keep him more alert. His hand fiddled blindly, seeking hold of the controls, and after a moment, a sudden opera pierced the cold silence of the car. A soprano with a taut voice leapt along precise arpeggios. "Such tripe," she proclaimed.</p>
+<p>As he continued to scan the stations in silence, it occurred to her how short he was being. She resented how quickly he seemed to want this car ride to be over, even though she&#x27;d only just arrived. Judging by the way he was hurtling the car down the dark road it was increasingly apparent that he yearned for her to burn up like a meteorite falling from heaven. She felt an unshakable need to slow the car so that she and Peter would have time to properly reconnect. It had been years since her last visit, after all.</p>
+<p>As the headlights of passing cars scanned the interior of the sedan, her eyes flit from ceiling to seat to floor. At last, she spied an umbrella, lying haphazardly atop a pile of outdated atlases. She grabbed the curved wooden handle and pulled the umbrella close, wrapped it tight with the clasp, and maneuvered it beneath Peter&#x27;s seat. With it in place, she wiggled the umbrella, determining the location of its tip relative to her son&#x27;s feet and the pedals. She felt unsurprised that Peter failed to notice her. She had always seen him for what he was - clueless and aloof - and she had learned long ago that it was incumbent upon her to manage the world for him, lest he fall prey to its pitfalls.</p>
+<p>The umbrella caught hold of what she was certain was the brake pedal, so she gave a firm press, and the car slowed. Peter&#x27;s brow furrowed in what might have been confusion. On the radio, a talk show host was busy explaining the way of things to his audience.</p>
+<p>"Peter, the radio! Can&#x27;t you find some music?" His hand returned to groping at the controls, and the sounds of static and fractured conversation again filled the car.</p>
+<p>Constance soon felt the headlights of the truck behind them burning on her neck. Peter&#x27;s driving was now too slow. She could see already how they were going to be rear ended by this impatient truck driver. And she knew that Peter wouldn&#x27;t even see it coming. In the end, he&#x27;d slam on the brakes in a moment of clueless panic, crushing his dear mother in a great vortex of metal and blood.</p>
+<p>She maneuvered the umbrella over to the accelerator and jammed it down hard on the pedal. The sedan lurched safely away from the truck behind them just as the car radio finally caught hold of a station.</p>
+<p>"She had a lot on her mind, and she didn&#x27;t pay attention."</p>
+<p>Constance realized that she had been holding her breath. She took the fleeting moment of respite to catch it again, and search the rearview mirror for a modicum of awareness in her son&#x27;s eyes. In the inconsistent light, she saw with painful clarity that he was nodding off at the wheel. She gasped. Then she coughed, hard and loud. Her knees pushed into his back, but he remained silent. He always had been a deep sleeper, yearning to live in worlds of dream and fantasy. She unfastened her seatbelt and leaned forward over the center console, grabbing the knob for the volume. She cranked up the music, and the country ballad abruptly filled the car to brimming.</p>
+<p>"BEFORE SHE KNEW IT, SHE WAS SPINNING ON A THIN BLACK SHEET OF GLASS.."</p>
+<p>"What are you doing?!" Peter cried, suddenly free from his hibernation. His hand leapt knowingly this time and returned the volume to a gentler level. His voice left a shock of vibrance that hung in the silent air. She sensed an anger that must have been pulsing beneath his pores as he practically elbowed her back into the seat. She marked the moment in her mind. She was certain to discover a bruise on her breast later that night — the very breast that had nursed him so long ago. She was nearly shocked at how unconcerned he was for her. She caught his eyes in the mirror. He was so clearly tired, near exhaustion. How fortunate he was to have such a caring mother.</p>
+<p>"Well, let&#x27;s not go on in silence. For God&#x27;s sake, Peter, turn the music back on." She took the moment of distraction to again adjust the car&#x27;s speed with the umbrella.</p>
+<p>"She threw her hands up in the air. Jesus, take the wheel!"</p>
+<p>"Jesus at the wheel? He wouldn&#x27;t know the first thing about driving!" The humor seemed lost on Peter, though the comical song droned on nonetheless. After a torturous crawl through the chorus, she threw herself over the center console and turned off the music. She sat back again, nudging the umbrella with her foot to pick up the car&#x27;s pace.</p>
+<p>"I was waking you up," she explained.</p>
+      </div>
+    </section>
+
+
+    <div class="parallax-scene" style="background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 40%, #2a2a2a 100%);">
+      <div class="parallax-layer parallax-layer-1"></div>
+      <div class="parallax-layer parallax-layer-2"></div>
+      <div class="parallax-layer parallax-layer-3"></div>
+    </div>
+
+
+    <section class="piece-section" id="piece-8">
+      
+    <div class="piece-divider" >
+      <h2 class="piece-heading">Uncle</h2>
+      <span class="piece-ornament">&middot; &middot; &middot;</span>
+    </div>
+
+      <div class="hybrid">
+        <p class="drop-cap">My uncle and I were crammed in the back of the car like overstuffed luggage, and I was struggling for breath. It was a long trip from Florida to Tennessee and being crushed between my uncle and the car door had made it that much more excruciating. I only knew Uncle Mikey for that summer. As my father had driven him home from the airport, my mother had explained to me: "Don&#x27;t let him touch you. Your uncle has a gay disease." It was a layered command and one that left my young mind reeling with questions, but before I could make sense of her warning, my uncle had arrived. He had a friendly demeanor, and a face like my father&#x27;s but softer somehow. I was wary of him, and when it came time to pile into the car for the road trip, I was condemned to be stuck at his side.</p>
+<p>Later that summer, I found myself at the bottom of a hotel pool,</p>
+<p>the weight of the water compressing heavily on my chest,</p>
+<p>my body struggling for breath, and I</p>
+<p>relenting to the unforgiving pressure</p>
+<p>I lay there in that cool, blue ether until I could take it no longer. My eyes opened and my arms lifted my body slowly to the surface. I swallowed the humid air with delight as my cloudy vision cleared. Uncle Mikey was nearby, doing back flips into the cobalt water, and as he surfaced alongside me, he laughed, saying he had bumped his head on the pool bottom that time. Trickles of red began to run rivulets down his face, and my eyes widened as I realized the danger to the others in the pool. I turned and swam to the edge and hoisted myself out. I had to protect these people from the gay disease, so I cupped my hands and announced to them: "This man has AIDS. Everyone exit the pool." Uncle Mikey locked himself in his room for the rest of the summer.</p>
+<div class="hybrid-verse"><p class="poem-stanza">spicy chicken sandwiches for a buck all night<br>
+me and Unko, we&#x27;d steal dad&#x27;s old Ford<br>
+and fly with abandon down the starless highway<br>
+we once saw a hitchhiker hobbling through the weeds<br>
+he struggled for breath as he climbed in the cab<br>
+his stench of alcohol and sin made our eyes tear<br>
+he held his throat carefully when he whispered a thank you</p></div>
+<div class="hybrid-verse"><p class="poem-stanza">Unko had gotten out of bed in the dead of night<br>
+the nurses wouldn&#x27;t touch him<br>
+he was roaming the hospital hallways<br>
+struggling for breath, and whispering<br>
+I have to leave, he kept saying,<br>
+I have to go home<br>
+tubes and wires trailed behind him<br>
+a tangled web of plastic painting red on the floor</p></div>
+      </div>
+    </section>
+
+
+    <div class="parallax-scene" style="background: linear-gradient(180deg, #1a2a3a 0%, #0d1520 40%, #1a2530 100%);">
+      <div class="parallax-layer parallax-layer-1"></div>
+      <div class="parallax-layer parallax-layer-2"></div>
+      <div class="parallax-layer parallax-layer-3"></div>
+    </div>
+
+
+    <section class="piece-section" id="piece-9">
+      
+    <div class="piece-divider" >
+      <h2 class="piece-heading">Doorjam</h2>
+      <span class="piece-ornament">&middot; &middot; &middot;</span>
+    </div>
+
+      <div class="prose">
+        <p class="drop-cap">It was an unusually hot day in autumn when the weight of the old pantry door led its own hinges to buckle and break. The swollen slab sat staunchly in place, though I struggled for weeks to remove it. The door&#x27;s edges clutched at the adjoining frame so tightly there was no room to budge nor moment to breathe. I considered taking an axe to the damn thing - how satisfying it would have been to swing the sharp slick iron and splinter that stubborn shit! — but its face was something to be admired. An ornate fresco was puckered among the grooves and crags of the facade, the stunningly intricate carvings of some family carpenter long since passed. Miniature scenes stretched between the knots and whorls — far-off eagles frozen in flight, rugged frontiersman poised above a pristine vista of rolling hills and towering pine, a stalwart ship riding an insatiable sea. How could I live with destroying such beauty?</p>
+<p>However by winter it was deemed a lost cause. Try as I might, I negotiated not one inch from the obstinate piece of oak. It came to be a brick in the wall rather than a door the way that it stood so cemented and steadfast. With each new day, I examined each detail of its sublime scenery — the number of boxcars snaking through a rocky crevasse, the astral trails of fireworks above a starlit cityscape, the forlorn face of a stately figurehead mounted on a ship&#x27;s bow. And yet I came to hear the scratches of vermin claws dancing inside the sealed chamber. A cacophony of scuffs and scrapes littered the nights as the rats reveled in this misfortune, screeching as they squabbled over sleeves of saltines. The sounds of their ceaseless savagery echoed through the floorboards of the house and left my nights sleepless and strained. All the while those mindless beasts paid no heed to the festering piles of filth at their feet.</p>
+<p>Come spring, the whole house stunk of shit and rot, but by then I had grown too accustomed to the stench to even realize. Those noxious fumes had anchored in my lungs. Their poisons pounded like mortars in my heart and weakened my weary mind. My eyes grew swollen and red, agitated from a relentless stream of grey tears that trickled down my face. My shallow bouts of sleep became riddled with fitful dreams of drowning, and I would sometimes half wake to find myself out of bed and standing at the pantry door. In the darkness my hands would press their way along that extravagant tapestry trapped in time and timber — a column of smoke rising above a regal steamboat, a glacier cascading between snow-capped peaks, waves caressing a moonlit shore - and my fingertips, splintered and bloody, tapped in time with the frantic footsteps behind the door. Lazily I would hum some half-forgotten anthem until the grace of slumber took me once again like a castaway swallowed by the insatiable sea.</p>
+<p>One crisp summer night I dreamt of sea foam on my skin and sun on my face. With a start I woke to inferno - roaring masts of smoke tossing and tangoing in the flickering glow of hungry flames. They licked the walls that held the fulcrum of the hellish blaze: the pantry door. A candle lay prone on the floor, knocked over by reckless rats or a careless sleepwalker, I will never know. I strained my eyes against the vicious heat to see the door&#x27;s flamboyant facade once more, to see that life held fast in a moment, but I could make out little more than a fierce and blinding light. Gasping I turned and fumbled out of the house, falling to my knees, my bloodied fingers grasping at cool earth, as behind me the walls moaned, lamenting the kisses of flame. I could hear the oak slab pop and crack in the hellish halls of my forsaken home, but it wasn&#x27;t until daybreak when the pantry door finally buckled and broke. The sun had not yet seen fit to peek over the horizon, and already it was an unusually hot morning, when with a momentous crash and a sickening belch, a life crumbled to ash in the twilit breaths of a new day&#x27;s dawn.</p>
+      </div>
+    </section>
+
+
+    <div class="parallax-scene" style="background: linear-gradient(180deg, #3a2010 0%, #4a2a0a 40%, #2a1505 100%);">
+      <div class="parallax-layer parallax-layer-1"></div>
+      <div class="parallax-layer parallax-layer-2"></div>
+      <div class="parallax-layer parallax-layer-3"></div>
+    </div>
+
+
+    <section class="piece-section" id="piece-10">
+      
+    <div class="piece-divider" >
+      <h2 class="piece-heading">Drown</h2>
+      <span class="piece-ornament">&middot; &middot; &middot;</span>
+    </div>
+
+      <div class="prose">
+        <p class="drop-cap">I burst from the water like a half-dying whale, gasping for gulps of air and screaming them back out, trying desperately to get the captain&#x27;s attention over the rumbles of the charcoal sky. A wave crested and crashed upon me, pressing me back into the dark abyss below. There was a flash of sky, and my face felt the night air again, its darkness prickled with static, heavy and humid with the promise of a momentous storm. The sky cracked down its seams, jagged rivers of lightning splitting open the night and lighting the mountainous maws of the ocean. I spied the ship again, its spotlight painting broad strokes across the waves and searching... searching for me. I cried for help as loud as I could, but the sky roared with thunderous laughter, drowning my calls as another monstrous wave rose up and pushed me under. The world around me began to pound and hum with rain, and I surfaced again, swallowing mouthfuls of water and air. My eyes were blinded by a piercing light, and I coughed out a scream, fighting desperately to catch the captain&#x27;s eye before the thunder could follow the lightning. My arms clawed at the heavens, though I saw nothing but that ceaseless light, when my hands were suddenly taken in another&#x27;s. My body rose up from the water, the sea hanging heavy in my bones. I fell exhausted onto the wooden planks of the boat deck as the furious sea pitched back and forth. My eyes rolled in my head, the din of the storm screaming around us, and I could see the captain&#x27;s face shrouded in a pool of seamless light. His mouth was moving but I couldn&#x27;t hear his words. The rain fell hurriedly, filling my eyes, until there was nothing but water and light and the relentless clamor of the night.</p>
+      </div>
+    </section>
+
+
+    <div class="parallax-scene" style="background: linear-gradient(180deg, #0a1520 0%, #0d1a2e 40%, #1a2a3a 100%);">
+      <div class="parallax-layer parallax-layer-1"></div>
+      <div class="parallax-layer parallax-layer-2"></div>
+      <div class="parallax-layer parallax-layer-3"></div>
+    </div>
+
+
+    <section class="piece-section" id="piece-11">
+      
+      <div class="micro-poem">
+        <p class="micro-poem-text">He kissed me so sweetly<br>
+That the knots in my stomach came undone<br>
+And I threw up in his mouth.</p>
+      </div>
+    </section>
+
+<div class="micro-divider">&middot;</div>
+
+    <section class="piece-section" id="piece-12">
+      
+    <div class="piece-divider" >
+      <h2 class="piece-heading">His Beloved Creation</h2>
+      <span class="piece-ornament">&middot; &middot; &middot;</span>
+    </div>
+
+      <div class="prose">
+        <p class="drop-cap">I find myself wondering: how might it have gone differently if Dr Frankenstein hadn&#x27;t have seen his creation — the so-called "monster" — as an abomination? What if he hadn&#x27;t run from it with despair and disdain?</p>
+<p>Imagine instead: in that warm dank womb of a lab, on an electric summer night when the storm made the air vibrate and the Doctor&#x27;s hair stand on end, when that cord of lightning snapped down from heaven and smacked life into one more earthly being so it could sit up with nascent sight and an unblemished mind — what if the Doctor had instead pulled it close to him and whispered:</p>
+<p>"My Beloved! Here you are with me at last."</p>
+<p>One must see how differently the so-called "monster" could have been seen when those strangers arrived at the castle door with nothing better to do than scream and mob about. Imagine if the doctor had stood at the threshold and said, "Put down your torches for this being — it is light and life incarnate." Maybe they would have been able to see the so-called "monster" for something more than a collection of broken parts.</p>
+<p>Sure, some would suggest that the Doctor ought to have collected the pieces from the living, that this creation was unnatural simply for its composition. And sure, the Doctor might have gotten lucky with a finger or two donated here and there, perhaps a foot or a kidney from the more generous, but there are some parts that simply cannot be given away. Brains and hearts are inextricably woven into our beings, and simply put the doctor was not seeking to create a life of digits and other expendable bits. What was the point in all of that? And besides, is any of us truly that much more than a collection of parts held fast by a need to live and love, a need that runs through us like sutures and glue?</p>
+<p>What if the good Doctor had leaned in close, had held his Creation&#x27;s head in his hands, and kissed the scars that meandered across its gentle face. Then maybe that so-called "monster" would have fallen instead into step with the beat of a loving heart. Its days might have been spent languishing under the summer sun, seeking life in the light and shadow that dances in streams of clouds flowing across the sky. Or perhaps it might have developed a knack for composing poetry, piecing together clunky stanzas that might evoke the life it felt inside and around. Perhaps the Doctor might not have died alone on a cold sheet of ice, but rather in the warm arms of his Beloved — this creature of life and death, dark and light, who in his final moments would pull him close and whisper:</p>
+<p>"My Beloved! Here you are with me at last."</p>
+      </div>
+    </section>
+
+
+    <div class="parallax-scene" style="background: linear-gradient(180deg, #1a1a2e 0%, #2a1a3a 40%, #1a1520 100%);">
+      <div class="parallax-layer parallax-layer-1"></div>
+      <div class="parallax-layer parallax-layer-2"></div>
+      <div class="parallax-layer parallax-layer-3"></div>
+    </div>
+
+
+    <section class="piece-section" id="piece-13">
+      
+    <div class="piece-divider" >
+      <h2 class="piece-heading">Transcendent Love</h2>
+      <span class="piece-ornament">&middot; &middot; &middot;</span>
+    </div>
+
+      <div class="poetry">
+        <p class="poem-stanza">Dear Lord! the world is spinning in well-versed pirouettes<br>
+I toss in my sleep at night, music reeling in my head<br>
+Prima on trumpet!<br>
+That tenacious tongue tickling and trotting a tune<br>
+as I dream of the night when I met hir.</p>
+<p class="poem-stanza">Heaven was beside me as we traipsed hand in hand<br>
+Out around town, our heads and hearts<br>
+half-tipsy on gypsy wine<br>
+In hir eyes I could see the stars sighing...<br>
+and impressing upon me the most divine frustrations.</p>
+<p class="poem-stanza">Oh Lord! once I would have stretched away from hir fingertips<br>
+but when they danced along my skin<br>
+I could only sway into hir arms<br>
+and let go of that faded thing I used to be.</p>
+<p class="poem-stanza">The sky splintered into streams of light<br>
+that zipped by and ripped open the night<br>
+The treetops mumbled and whispered as the quickening storm drummed and thumped<br>
+heavy handfuls of rain upon us.</p>
+<p class="poem-stanza">"It&#x27;s going to really storm," I whispered<br>
+and my stomach turned at the dreadful thought of this dream waning<br>
+My Lord!</p>
+<p class="poem-stanza">Ze pulled me closer and brought our hearts together and replied<br>
+"Let it."</p>
+<p class="poem-stanza">As we kissed and embraced amidst the furious storm<br>
+I could have sworn that over the roar<br>
+I heard the sighs and soars of an angel trumpeting<br>
+to the quickening step of the Earth dancing round its axis.</p>
+      </div>
+    </section>
+
+
+    <div class="parallax-scene" style="background: linear-gradient(180deg, #1a2e1a 0%, #0d200d 40%, #1a3a1a 100%);">
+      <div class="parallax-layer parallax-layer-1"></div>
+      <div class="parallax-layer parallax-layer-2"></div>
+      <div class="parallax-layer parallax-layer-3"></div>
+    </div>
+
+
+    <section class="piece-section" id="piece-14">
+      
+    <div class="piece-divider" >
+      <h2 class="piece-heading">Zoe</h2>
+      <span class="piece-ornament">&middot; &middot; &middot;</span>
+    </div>
+
+      <div class="prose">
+        <p class="drop-cap">Zoe looked back only once the day she left home forever. Having unceremoniously finished her house chores, she was happy to find the summer sun had stretched the afternoon long like dough in a baker&#x27;s hands. She half-tied the knots in her dusty shoes and set off with a gallop across the open fields. Her course was set for the forest at the edge of the pastures. The wind raced past her and turned over the amber and emerald, making waves on the hillside and loosening her long hair from the tight bun behind her head. It was just as she was reaching the apex of a hill when she was suddenly struck by the feeling that something had been forgotten. Her jaunt from the house toward the distant tree line suddenly slowed to a halt. After a moment she dropped herself down on the soft earth, reclining in the long grass and letting her gaze roll upwards to the infinite blue. Her mind lolled through the long list of responsibilities she had left behind at the house, ensuring each was in fact finished. In truth, she found herself rather unmotivated to stay here much longer, drawn as she was by the lure of unimaginable adventures beyond the forest ahead. Yet Zoe felt for a brief second on the precipice of two wholly disparate lives, and was overwhelmed by an unmitigated longing to look homeward once more.</p>
+<p>Pulling herself up to sit, she turned to find the house looking smaller than she had remembered. The squat grey building stood atop a far-off hill, resting languorously amidst the spirited dance of the surrounding countryside. Linens billowed on the clothesline like the sails of a ship anchored on a blue-green ocean. Zoe vowed that she would be home by dinner and rose to her feet, brushing the grass from her faded pink dress. She turned back to face the forest and jettisoned all thoughts of the life behind her.</p>
+<p>With reckless abandon, she ran into the forest, trudging forth over the earth riddled with stones and weeds. The trees stood tall, their branches swaying and dancing tangos while the Sun peeked through and cast light and shadow across her path. She continued along, her route growing steeper and darker with each step, until the Sun, once able to find its way down to the forest floor, now seemed swallowed up in the thickening knots of branches overhead. Zoe steadied herself on the gnarled roots that flanked her path, half pulling herself up the rising slope. Her breathing grew more labored with each step, and she soon realized that her dress had become damp with sweat. She surveyed the dark, encroaching forest for a comfortable spot to rest and spied a glimpse of sunlight not much further up the hill. She stepped unhurriedly through the brambles and brush toward the glowing oasis. As she moved closer, Zoe realized that she was approaching an opening in the tree line. Her pace quickened until she was flying toward the warm sunlight, and soon she erupted from the forest into a small clearing, at the center of which was a tree larger than any she had ever seen. Zoe fought to catch her breath, standing alone with the mighty tree in the otherwise empty clearing. The tree was encircled only by its own mighty roots, which grappled and hugged the earth. As Zoe looked up, she was amazed to see that the lowest boughs of the tree were miles above the ground. Its underbelly glowed a deep emerald green and seemed to pulsate as if with its own heartbeat. Zoe walked around the perimeter of the tree, climbing over the twisted roots that weaved over and under the earth. The magnitude of the trunk astonished her, its curve fairly negligible, and she half wondered if this wasn&#x27;t some sort of strange dream. After nearly an hour, Zoe realized that she had only then returned to her starting point and dropped wearily against a nearby root. The Sun had dropped low in the sky and huddled just above the surrounding tree line, throwing the world into a pool of gold and orange.</p>
+<p>Zoe let her head fall back against the root&#x27;s side, wondering whether she should continue circling the trunk. The tree had turned out to be larger than she had anticipated entirely. Her eyes rose again to the dark green underbelly of the tree, and even in the low light, the wall of green that covered the lowest boughs still seemed to move and beat with life. As her eyes adjusted in the twilight, Zoe noticed that amongst the dark green above there was a hint of light coming from somewhere amongst the branches. She strained to make out some sort of detail and could just see a faint line running from the source of light down the trunk of the tree to the ground nearby. She quickly rose to her feet and navigated through the roots until she had reached the base of the line. It was a ladder carved right into the tree trunk, climbing straight up the tree towards what she was now certain was a glowing light coming from within the boughs.</p>
+<p>The sheer anticipation of discovering the source of this strange light took hold of her, and before she had thought much further she was taking her first steps up the ladder. A part of her knew that this was a foolish idea. The ladder climbed so far up the tree and with nothing else to hold her, the climb was absolutely perilous. Yet she found herself taking rung after rung in hand, her feet following carefully below. Before long, she was high above the surrounding tree line and could see the Sun setting in the distance, peeking curiously over the horizon. She climbed ever higher, until the evening light had been sucked away and she was left alone, high in the cold night. Zoe clenched the rungs of the ladder tightly, determined not to look down even once. The wind roared furiously around her, ripping and pulling at her dress.</p>
+<p>As she drew closer to the pulsating underbelly of the tree, Zoe found herself able to make out why the tree had appeared to move. Though it had appeared to be a solid wall of green from the ground, she could now see vines of ivy overlapping one another, creating a blanket that undulated and flowed as if riding waves on an inverted ocean. The ladder continued directly up the trunk of the tree, plunging purposefully through the ivy. Above her, the green fronds glowed brightly, lit from somewhere within the tree. She continued her climb, letting go only to push aside the fronds of ivy flowing past her. The ivy leaned and pushed back, pressing her tight against the ladder. She used the weight to hoist herself up with some ease, and Zoe soon found herself leaning almost entirely on a wall of ivy. As she pushed into the broad leaves, they pushed back, balancing the force seamlessly. They glowed gold and green around her as she swam through a sea of ivy, pushing armfuls aside, until she finally came upon the source of the light. A gas lantern hung from a wooden platform just a few feet above her head. The platform appeared to support a tree house, stretching deep into the ivy in every direction. Directly overhead, there was a circular door with a cast-iron doorknocker. The vines emanated from the cracks between the floorboards and smothered the light coming through from above. Over the murmurs of the ivy swaying in the wind below, Zoe was certain she could hear someone humming, and realizing that she had reached the absolute end of her climb, Zoe did the only thing that seemed reasonable at the time: she knocked.</p>
+      </div>
+    </section>
+
+</main>
+
+<footer>
+  <div class="ornament">&middot; &middot; &middot;</div>
+  <p>Short Works &mdash; Shawn Jordan</p>
+  <p>&copy; Shawn Jordan. All rights reserved.</p>
+</footer>
+
+<script>
+(function() {
+  // Dark mode toggle
+  const toggle = document.getElementById('darkToggle');
+  const html = document.documentElement;
+
+  if (localStorage.getItem('dark') === 'true') {
+    html.classList.add('dark');
+    toggle.textContent = 'Daylight';
+  }
+
+  toggle.addEventListener('click', function() {
+    html.classList.toggle('dark');
+    const isDark = html.classList.contains('dark');
+    localStorage.setItem('dark', isDark);
+    toggle.textContent = isDark ? 'Daylight' : 'Lamplight';
+  });
+
+  // Progress bar
+  const progressBar = document.getElementById('progress-bar');
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = progress + '%';
+  }
+
+  // Header visibility
+  const header = document.getElementById('header');
+  let lastScroll = 0;
+  function updateHeader() {
+    const scrollTop = window.scrollY;
+    if (scrollTop > 300) {
+      header.classList.add('visible');
+    } else {
+      header.classList.remove('visible');
+    }
+    lastScroll = scrollTop;
+  }
+
+  // Section fade-in
+  const sections = document.querySelectorAll('.piece-section');
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  sections.forEach(function(section) {
+    observer.observe(section);
+  });
+
+  // Dot navigation active state
+  const dots = document.querySelectorAll('#section-nav a');
+  const pieceIds = Array.from(dots).map(function(d) {
+    return d.getAttribute('href').substring(1);
+  });
+
+  function updateDots() {
+    let activeId = pieceIds[0];
+    for (let i = 0; i < pieceIds.length; i++) {
+      const el = document.getElementById(pieceIds[i]);
+      if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.4) {
+        activeId = pieceIds[i];
+      }
+    }
+    dots.forEach(function(dot) {
+      const href = dot.getAttribute('href').substring(1);
+      dot.classList.toggle('active', href === activeId);
+    });
+  }
+
+  // Active nav link in header
+  const navLinks = document.querySelectorAll('header nav a');
+  function updateNavLinks() {
+    let activeHref = '#title';
+    for (let i = 0; i < pieceIds.length; i++) {
+      const el = document.getElementById(pieceIds[i]);
+      if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.4) {
+        activeHref = '#' + pieceIds[i];
+      }
+    }
+    navLinks.forEach(function(link) {
+      link.classList.toggle('active-nav', link.getAttribute('href') === activeHref);
+    });
+  }
+
+  // Parallax scroll effect
+  const scenes = document.querySelectorAll('.parallax-scene');
+  function updateParallax() {
+    scenes.forEach(function(scene) {
+      const rect = scene.getBoundingClientRect();
+      const speed = 0.3;
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        const offset = (rect.top - window.innerHeight) * speed;
+        const layers = scene.querySelectorAll('.parallax-layer');
+        layers.forEach(function(layer, i) {
+          const layerSpeed = (i + 1) * 0.15;
+          layer.style.transform = 'translateY(' + (offset * layerSpeed) + 'px)';
+        });
+      }
+    });
+  }
+
+  // Throttled scroll handler
+  let ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        updateProgress();
+        updateHeader();
+        updateDots();
+        updateNavLinks();
+        updateParallax();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  // Initial calls
+  updateProgress();
+  updateHeader();
+  updateDots();
+})();
+</script>
+
+</body>
+</html>
