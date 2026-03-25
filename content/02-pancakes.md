@@ -1,0 +1,8 @@
+---
+title: Pancakes
+type: prose-poetry
+---
+
+School was right around the corner so we had heaps of time. Every morning I floated down the stairs on the perfumes of fresh pancakes. Beautiful golden crispy-edged rounds, littered in a puddle of drizzled syrup. We'd lay the butter on thick, generous pads of fat that slid down the tan hills. I would flick through the channels while you would sing your silly songs, always looking for a laugh while I looked for cartoons. We were one of a kind, two peas in a pod. And by the time we had to head out, we were full to brimming, because the flapjacks were always piled high, a generous tower that never quite met the ceiling but came near close some days. And now here I am, trying to find the right recipe, that one that flipped instead of flopped. Asking - is it there? Somewhere in the stack?
+
+We've got this special pan - the kind we only take out when we're making pancakes. You see, this pan is powered by magic. The sort of simple magic that makes a kid dare to flip cartwheels or that helps smoke escape out an open window. This pan, it catches the sun that streams in, like a glistening torrent of slick butter drizzling right off the breeze and basking in pools and puddles around our bubbling dough. Every pancake cooked in this pan is the one no one can resist. The one that's rare, that strikes at simple tones in simple memories. This is the pan where the cake never burns and the flip never misfires, where the oils never spit as they simmer around the cooking sweets but rather whisper words to the chef: "what if? what if?" We'll lean in close, at attention on tipped toes, listening for the right pop of bubbles in the dough before we dare to flip.

@@ -1,0 +1,6 @@
+---
+title: Reflection
+type: prose-poem
+---
+
+The water lay perfectly still, silently reflecting the blinking eyes of faraway stars that stirred sleepily in the shroud of dying summer light. The sun dangled carelessly on the cusp of the earth's face, its rose hues bleeding into swaths of indigo dark as a fresh bruise. I approached the water's edge, each step pulsing in that celestial mirror and making the stars rock softly in place before resolving back into their watchful posts. I leaned over the water and peered down into the void, straining to see the dim features of my likeness in the fading light. The profile was obscured almost entirely in darkness, but my eyes traced the shape of an outline floating tranquilly in the bed of night sky below the water's surface. My eyes grappled for a familiar feature on that shadowy face, only to find the distant whites of a stranger's eyes looking back. I moved closer, certain that no body was there but me, and yet as my hand rose to touch my face, I saw only that sinister specter staring back, steadfast in its stillness. I swatted at the water, shattering the stranger in the pool into countless pieces, and settled back on the shore to stare instead into the untouchable sky.
